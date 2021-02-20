@@ -10,9 +10,9 @@
             <el-button @click="clearCanvas">清空画布</el-button>
             <div class="canvas-config">
                 <span>画布大小</span>
-                <input v-model="canvasStyleData.width">
+                <input v-model="canvasStyleData.width"/>
                 <span>*</span>
-                <input v-model="canvasStyleData.height">
+                <input v-model="canvasStyleData.height"/>
             </div>
         </header>
 
@@ -42,7 +42,9 @@
                                 <el-tag
                                     v-for="(tag, index) in curComponent.animations"
                                     :key="index"
+                                    type="primary"
                                     closable
+                                    :disable-transitions="false"
                                     @close="removeAnimation(index)"
                                 >
                                     {{ tag.label }}
@@ -56,12 +58,13 @@
                             <el-button @click="isShowEvent = true">添加事件</el-button>
                             <div>
                                 <el-tag
-                                    v-for="event in Object.keys(curComponent.events)"
-                                    :key="event"
+                                    v-for="(event,key) in curComponent.events"
+                                    :key="key"
                                     closable
-                                    @close="removeEvent(event)"
+                                    :disable-transitions="false"
+                                    @close="removeEvent(key)"
                                 >
-                                   {{ event }}
+                                   {{ key }}
                                 </el-tag>
                             </div>
                         </div>
@@ -83,6 +86,7 @@
                             @mouseover="hoverPreviewAnimate = animate.value"
                             @click="addAnimation(animate)"
                         >
+                        <!-- 动画运行 -->
                             <div :class="[hoverPreviewAnimate === animate.value && animate.value + ' animated']">
                                 {{ animate.label }}
                             </div>
@@ -139,6 +143,7 @@ export default {
             eventURL: '',
             eventActiveName: 'redirect',
             eventList,
+          
         }
     },
     computed: mapState([
@@ -200,9 +205,10 @@ export default {
                 toast('只能插入图片', 'error')
                 return
             }
-
+            // FileReader() https://developer.mozilla.org/zh-CN/docs/Web/API/FileReader/onload
             const reader = new FileReader()
             reader.onload = (res) => {
+                console.log('file', res)
                 const fileResult = res.target.result
                 const img = new Image()
                 img.onload = () => {
@@ -245,11 +251,11 @@ export default {
 
         preview() {
             this.isShowPreview = true
-            this.$store.commit('setEditMode', 'read')
+            this.$store.commit('setEditMode', 'read') // 只读
         },
 
         handlePreviewChange() {
-            this.$store.commit('setEditMode', 'edit')
+            this.$store.commit('setEditMode', 'edit') // 切换回编辑
         },
 
         save() {
@@ -265,10 +271,13 @@ export default {
         addEvent(event, param) {
             this.isShowEvent = false
             this.$store.commit('addEvent', { event, param })
+            console.log('param', event, param)
         },
 
         removeEvent(event) {
             this.$store.commit('removeEvent', event)
+            this.$set(this.curComponent, 'events', this.$store.state.curComponent.events)
+            console.log('123', this.curComponent)
         },
     },
 }
@@ -282,7 +291,8 @@ export default {
     header {
         height: 64px;
         line-height: 64px;
-        background: #fff;
+        background: #43bd86;
+        padding:0 10px;
         border-bottom: 1px solid #ddd;
     }
 
@@ -318,6 +328,7 @@ export default {
             .content {
                 height: 100%;
                 overflow: auto;
+                // background-color: #fff;
                 display: flex;
                 align-items: center;
                 justify-content: center;
@@ -405,7 +416,9 @@ export default {
         margin-left: 10px;
         font-size: 14px;
         color: #606266;
-
+        span{
+            color:#fff;
+        }
         input {
             width: 50px;
             margin-left: 10px;

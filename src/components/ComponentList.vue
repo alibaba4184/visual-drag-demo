@@ -20,6 +20,7 @@ export default {
     methods: {
         handleDragStart(e) {
             e.dataTransfer.setData('index', e.target.dataset.index)
+            console.log('ee', e)
         },
     },
 }

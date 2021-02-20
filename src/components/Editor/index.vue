@@ -16,6 +16,7 @@
                 :is="item.component"
                 :style="getComponentStyle(item.style)"
                 :propValue="item.propValue"
+                @click.native="triggleEvent(curComponent)"
             />
 
             <component
@@ -102,6 +103,26 @@ export default {
             const newHeight = text.split('\n').length * lineHeight * fontSize
             return height > newHeight? height : newHeight
         },
+        triggleEvent(CurCommponent) {
+            console.log('components', CurCommponent)
+            let url = CurCommponent.events.redirect
+            if (CurCommponent.events.alert) {
+                this.$alert(CurCommponent.events.alert, 'alert事件', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    callback: action => {
+                        this.$message({
+                            type: 'info',
+                            message: `action: ${action}`,
+                        })
+                    },
+                })
+            }
+            if (CurCommponent.events.redirect) {
+                window.open(url, '_blank')
+            }
+        },
+      
     },
 }
 </script>

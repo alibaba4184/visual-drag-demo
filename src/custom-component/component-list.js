@@ -59,6 +59,28 @@ const list = [
             borderRadius: '',
         },
     },
+    {
+        component: 'VJuXing', 
+        label: '矩形', 
+        propValue: '矩形',
+        icon: 'el-icon-thumb',
+        animations: [],
+        events: {},
+        style: {
+            width: 200,
+            height: 200,
+            borderWidth: '1px',
+            borderColor: '',
+            borderRadius: '',
+            fontSize: 14,
+            fontWeight: 500,
+            // lineHeight: "",
+            letterSpacing: 0,
+            textAlign: '',
+            color: '',
+            backgroundColor: '',
+        },
+    },
 ]
 
 list.forEach(item => {
